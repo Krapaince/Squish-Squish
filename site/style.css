@@ -1,0 +1,205 @@
+@charset "UTF-8";
+:root {
+  --white: #ffffff;
+  --main: #31356E;
+  --second: #FDF39F;
+  --font: Arial, Helvetica, sans-serif;
+}
+
+/*
+@media (max-width: 1190px) {
+}
+
+@media (max-width: 600px) {
+}
+*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background:#fff;
+  position: relative;
+}
+
+ul, li {padding: 0; margin: 0;}
+a img {border: none;}
+*:focus {outline: inherit;}
+
+input, button {
+  -webkit-appearance: none;
+  border-radius: 50%;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+
+
+
+section {
+  width: 100%;
+}
+
+#header, #footer {
+  background-color: var(--main);
+  min-height: 10vh;
+}
+
+#main {
+  background-color: var(--white);
+  min-height: 80vh;
+}
+
+.container {
+  width: 1100px;
+  margin: 0 auto;
+}
+
+
+
+#header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+}
+
+h1 {
+  color: var(--white);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+h2 {
+  color: var(--white);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+
+.searchbar {
+  padding-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.searchbar input[type="text"] {
+  display: flex;
+  height: 50px;
+  width: 500px;
+  padding: 0 20px;
+  border: 5px var(--second) solid;
+  border-radius: 25px;
+  color: var(--main);
+  font-weight: bolder;
+  font-size: 16px;
+  transition: all 300ms ease;
+}
+
+.searchbar input[type="text"]:hover, .searchbar input[type="text"]:focus {
+  border-color: var(--main);
+}
+
+.searchbar button {
+  position: relative;
+  display: flex;
+  height: 50px;
+  width: 50px;
+  background-color: transparent;
+  margin-left: 20px;
+  border: 5px var(--second) solid;
+  transition: all 300ms ease;
+}
+
+.searchbar button:hover {
+  border-color: var(--main);
+}
+
+.sortLine {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+
+
+
+.pannel {
+  width: 20%;
+  max-height: 40px;
+  padding: 0 10px;
+  border-radius: 0;
+  overflow: hidden;
+  border: none;
+  border-bottom: 2px var(--second) solid;
+  transition: all 500ms ease;
+  border-bottom-left-radius: 10%;
+  border-bottom-right-radius: 10%;
+}
+
+.pannel:hover {
+  max-height: 1000px;
+  border-bottom: 2px var(--main) solid;
+  border-right: 2px var(--main) solid;
+  border-left: 2px var(--main) solid;
+}
+
+.pannel .title {
+  color: var(--main);
+  font-weight: bold;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.pannel .selectinpannel {
+  display: flex;
+  color: var(--main);
+  padding: 4px 0;
+}
+
+.pannel label {
+  cursor: pointer;
+}
+
+.pannel input {
+  background-color: transparent;
+  width: 20px;
+  height: 20px;
+  border: 2px var(--main) solid;
+  margin-right: 10px;
+}
+
+.pannel input:checked {
+  background-color: var(--main);
+}
+
+
+
+/* 
+input[type='radio']:before {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 60%;
+  margin: 20% auto;
+  border-radius: 50%;
+}
+
+input[type='radio']:checked:before {
+  background: green;
+} */
+
