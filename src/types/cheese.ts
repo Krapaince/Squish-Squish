@@ -1,4 +1,7 @@
 export interface Cheese {
-  type: string,
-  value: string,
+  link: string,
+  label: string,
+  country: string,
+  source: string,
+  thumbnail: string,
 };
