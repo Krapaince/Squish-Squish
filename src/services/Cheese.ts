@@ -1,6 +1,8 @@
-import { Cheese } from '../types/cheese'
+import { Cheese, FetchedCheese } from '../models/Cheese'
+import { Country } from '../models/Country'
+import { fetchFromSparqlEndpoint } from './Sparql'
 
-export async function getCheeses(): Promise<Array<Cheese>> {
+export async function fetchCheesesInformation(): Promise<Array<FetchedCheese>> {
   const query = `
   SELECT DISTINCT ?cheese ?label ?country ?source ?thumbnail
     WHERE {
@@ -11,23 +13,11 @@ export async function getCheeses(): Promise<Array<Cheese>> {
             dbp:source ?source ;
             dbo:thumbnail ?thumbnail .
     FILTER (lang(?label) = "en")
-    }
-  `
-  const results = await fetch(`https://dbpedia.org/sparql?query=${query}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/sparql-results+json',
-    },
-  })
-    .then(async function (data) {
-      return data.text().then(JSON.parse)
-    })
-    .catch(function (error) {
-      console.log('Request failed', error)
-    })
-  console.log(results.results)
+    }`
+  const results: any = await fetchFromSparqlEndpoint(query)
+
   return results.results.bindings
-    .map((binding: unknown) => {
+    .map((binding: any) => {
       return {
         link: binding.cheese.value,
         label: binding.label.value,
@@ -36,7 +26,22 @@ export async function getCheeses(): Promise<Array<Cheese>> {
         thumbnail: binding.thumbnail.value,
       }
     })
-    .sort(function compareFn(elem1: Cheese, elem2: Cheese) {
+    .sort(function compareFn(elem1: FetchedCheese, elem2: FetchedCheese) {
       return elem1.label.localeCompare(elem2.label)
     })
+}
+
+export function toCheese(fetched_cheeses: Array<FetchedCheese>, countries: Array<Country>): Array<Cheese> {
+  const cheeses: Array<Cheese> = []
+
+  for (const [i, cheese] of fetched_cheeses.entries()) {
+    cheeses.push({
+      link: cheese.link,
+      label: cheese.label,
+      country: countries[i],
+      source: cheese.source,
+      thumbnail: cheese.thumbnail,
+    })
+  }
+  return cheeses
 }
