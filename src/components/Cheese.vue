@@ -3,8 +3,15 @@
     <div
       class="overflow-hidden relative max-w-sm mx-auto bg-white shadow-lg ring-1 ring-black/5 rounded-xl flex items-center gap-6"
     >
-      <img class="absolute -left-2 w-24 h-24 rounded-full shadow-lg" :src="`${thumbnail}`" />
-      <div class="flex flex-col py-5 pl-24 pr-8">
+      <img
+        v-if="!isThumbnailUndefined()"
+        class="absolute -left-2 w-24 h-24 rounded-full shadow-lg"
+        :src="`${thumbnail}`"
+      />
+      <div
+        class="flex flex-col py-5 pr-8"
+        :class="{ 'pl-24': !isThumbnailUndefined(), 'pl-8': isThumbnailUndefined() }"
+      >
         <a class="text-gray-900 text-lg" :href="`${link}`">{{ label }}</a>
         <span class="text-gray-500 text-sm">{{ source }}</span>
         <div class="flex flex-row place-items-center gap-1">
@@ -21,9 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-defineProps({
+const props = defineProps({
   link: String,
   label: String,
   country_name: String,
@@ -32,4 +37,8 @@ defineProps({
   source: String,
   thumbnail: String,
 })
+
+function isThumbnailUndefined(): boolean {
+  return props.thumbnail == undefined
+}
 </script>

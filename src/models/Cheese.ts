@@ -5,7 +5,7 @@ export interface FetchedCheese {
   label: string
   country: string
   source: string
-  thumbnail: string
+  thumbnail?: string
 }
 
 export interface Cheese {
@@ -13,5 +13,5 @@ export interface Cheese {
   label: string
   country: Country
   source: string
-  thumbnail: string
+  thumbnail?: string
 }
