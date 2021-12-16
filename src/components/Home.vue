@@ -1,19 +1,25 @@
 <template>
-  <SearchBar @filter-region='setCountryFilter' />
-  <div class='z-0'>
-    <div class='flex flex-row flex-wrap gap-1 justify-around content-center'>
-      <Cheese
-        v-for='(cheese, index) in cheeses'
-        :key='index'
-        :class='{ hidden: !che_models.NCheeseFilter.isFilter(filter, cheese) }'
-        :link='cheese.link'
-        :label='cheese.label'
-        :country_name='cheese.country.name'
-        :country_link='cheese.country.link'
-        :country_thumbnail='cheese.country.thumbnail'
-        :source='cheese.source'
-        :thumbnail='cheese.thumbnail'
-      />
+  <div class='mt-5'>
+    <h1 class='text-amber-400 text-center text-7xl pb-2'>Squish Squish</h1>
+    <span class='text-center text-orange-700 block text-4xl'>Your cheesy cheese!</span>
+  </div>
+  <div class='mx-5'>
+    <SearchBar @filter-region='setCountryFilter' />
+    <div class='z-0'>
+      <div class='flex flex-row flex-wrap justify-between content-start'>
+        <Cheese
+          v-for='(cheese, index) in cheeses'
+          :key='index'
+          :class='{ hidden: !che_models.NCheeseFilter.isFilter(filter, cheese) }'
+          :link='cheese.link'
+          :label='cheese.label'
+          :country_name='cheese.country.name'
+          :country_link='cheese.country.link'
+          :country_thumbnail='cheese.country.thumbnail'
+          :source='cheese.source'
+          :thumbnail='cheese.thumbnail'
+        />
+      </div>
     </div>
   </div>
 </template>
