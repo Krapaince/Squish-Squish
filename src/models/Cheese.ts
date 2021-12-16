@@ -41,4 +41,15 @@ export namespace NCheeseFilter {
 
     return region && query
   }
+
+  export function computeNbResults(filter:CheeseFilter, cheeses: Array<Cheese>): Number {
+    let nb_results = 0
+
+    for (const cheese of cheeses) {
+      if (isFilter(filter, cheese)) {
+        nb_results += 1
+      }
+    }
+    return nb_results
+  }
 }

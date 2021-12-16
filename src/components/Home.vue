@@ -4,7 +4,7 @@
     <span class='text-center text-orange-700 block text-4xl'>Your cheesy cheese!</span>
   </div>
   <div class='mx-5'>
-    <SearchBar @filter-region='setCountryFilter' @filter-query='setQueryFilter'/>
+    <SearchBar @filter-region='setCountryFilter' @filter-query='setQueryFilter' :nb_results='nb_results' />
     <div class='z-0'>
       <div class='flex flex-row flex-wrap justify-between content-start'>
         <Cheese
@@ -26,7 +26,7 @@
 
 <script setup lang='ts'>
 import SearchBar from './SearchBar.vue'
-import { Ref, ref, provide, onBeforeMount } from 'vue'
+import { Ref, ref, provide, onBeforeMount, watch } from 'vue'
 import { fetchCheesesInformation, mapCountryToCheese, fetchWikidataCheeses } from '../services/Cheese'
 import { fetchCountriesWithUrl } from '../services/Country'
 import * as che_models from '../models/Cheese'
@@ -37,7 +37,8 @@ const dbpedia_cheeses: Ref<Array<che_models.Cheese>> = ref([])
 const wikidata_cheeses: Ref<Array<che_models.Cheese>> = ref([])
 var cheeses: Ref<Array<che_models.Cheese>> = ref([])
 const countries: Ref<Array<cnt_models.Country>> = ref([])
-const filter: Ref<che_models.CheeseFilter> = ref({ country: 'All' })
+const filter: Ref<che_models.CheeseFilter> = ref({ country: 'All', query: ''})
+const nb_results: Ref<Number> = ref(0)
 
 provide('countries', countries)
 
@@ -52,6 +53,7 @@ onBeforeMount(async () => {
   cheeses.value = dbpedia_cheeses.value.concat(wikidata_cheeses.value)
 
   cheeses.value.sort((a, b) => a.label < b.label ? -1 : (a.label > b.label ? 1 : 0))
+  nb_results.value = cheeses.value.length
 })
 
 function setCountryFilter(country: String) {
@@ -59,8 +61,11 @@ function setCountryFilter(country: String) {
 }
 
 function setQueryFilter(query: String) {
-  console.log(query)
   filter.value.query = query
 }
+
+watch(filter.value, () => {
+  nb_results.value = che_models.NCheeseFilter.computeNbResults(filter.value, cheeses.value)
+})
 
 </script>
