@@ -24,17 +24,21 @@ export namespace NCheese {
       label: cheese.label,
       country: country,
       source: cheese.source,
-      thumbnail: Url.tryFromString(cheese.thumbnail)
+      thumbnail: Url.tryFromString(cheese.thumbnail),
     }
   }
 }
 
 export interface CheeseFilter {
   country: String
+  query: String
 }
 
 export namespace NCheeseFilter {
   export function isFilter(filter: CheeseFilter, cheese: Cheese): boolean {
-    return (filter.country == cheese.country.name || filter.country == 'All')
+    const region = filter.country == cheese.country.name || filter.country == 'All'
+    const query = filter.query.length == 0 || (filter.query.length && cheese.label.startsWith(filter.query))
+
+    return region && query
   }
 }

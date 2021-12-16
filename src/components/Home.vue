@@ -4,7 +4,7 @@
     <span class='text-center text-orange-700 block text-4xl'>Your cheesy cheese!</span>
   </div>
   <div class='mx-5'>
-    <SearchBar @filter-region='setCountryFilter' />
+    <SearchBar @filter-region='setCountryFilter' @filter-query='setQueryFilter'/>
     <div class='z-0'>
       <div class='flex flex-row flex-wrap justify-between content-start'>
         <Cheese
@@ -56,6 +56,11 @@ onBeforeMount(async () => {
 
 function setCountryFilter(country: String) {
   filter.value.country = country
+}
+
+function setQueryFilter(query: String) {
+  console.log(query)
+  filter.value.query = query
 }
 
 </script>

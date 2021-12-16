@@ -14,7 +14,7 @@
       </div>
       <div>
         <div>
-          <input type='text' placeholder='Search' />
+          <input v-model='query' type='text' placeholder='Search' />
           <button id='search'></button>
         </div>
       </div>
@@ -24,14 +24,20 @@
 
 <script setup lang='ts'>
 import Region from './SearchBar/Region.vue'
-import { ref, Ref } from 'vue'
+import { ref, Ref, watch } from 'vue'
 import * as che_models from '../models/Cheese'
 
 const filter: Ref<che_models.CheeseFilter> = ref({ country: 'All' })
+const query = ref("")
 
-const emit = defineEmits(['filterRegion'])
+const emit = defineEmits(['filterRegion', 'filterQuery'])
 
 function setCountryFilters(country: String) {
   emit('filterRegion', country)
 }
+
+watch(query, () => {
+  emit('filterQuery', query.value)
+})
+
 </script>
