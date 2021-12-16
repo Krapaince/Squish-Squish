@@ -74,3 +74,40 @@ export function mapCountryToCheese(fetched_cheeses: Array<FetchedCheese>, countr
   }
   return cheeses
 }
+
+export async function fetchWikidataCheeses(): Promise<Array<Cheese>> {
+  const query = `
+  SELECT DISTINCT ?cheese ?cheeseLabel ?cheeseImage ?country ?countryLabel ?countryImage ?source ?sourceLabel WHERE {
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+    {
+      SELECT DISTINCT ?cheese ?cheeseImage ?country ?countryImage ?source WHERE {
+        ?cheese p:P279 ?s0.
+        ?s0 (ps:P279/(wdt:P279*)) wd:Q10943.
+        ?cheese p:P495 ?s1.
+        ?s1 (ps:P495/(wdt:P279*)) ?country.
+        ?cheese wdt:P186 ?source.
+        OPTIONAL { ?country wdt:P41 ?countryImage. }.
+        OPTIONAL { ?cheese wdt:P18 ?cheeseImage. }.
+      }
+    }
+  }`
+  const results: any = await fetchFromSparqlEndpoint(query, 'https://query.wikidata.org/sparql')
+  let cheeses: Array<Cheese> = []
+  results.results.bindings.forEach(cheese => {
+    if (isNaN(cheese.cheeseLabel.value.substr(1)) && isNaN(cheese.sourceLabel.value.substr(1))) {
+      const new_cheese: Cheese = {
+        link: Url.tryFromString(cheese.cheese.value),
+        label: cheese.cheeseLabel.value,
+        country: {
+          name: cheese.countryLabel ? cheese.countryLabel.value : undefined,
+          link: cheese.country ? Url.tryFromString(cheese.country.value) : undefined,
+          thumbnail: cheese.countryImage ? Url.tryFromString(cheese.countryImage.value) : undefined,
+        },
+        source: cheese.sourceLabel ? cheese.sourceLabel.value : undefined,
+        thumbnail: cheese.cheeseImage ? Url.tryFromString(cheese.cheeseImage.value) : undefined,
+      };
+      cheeses.push(new_cheese)
+    }
+  });
+  return (cheeses)
+}
