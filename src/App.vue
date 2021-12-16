@@ -1,7 +1,7 @@
-<script setup lang="ts">
-import Cheeses from './components/Cheeses.vue'
+<script setup lang='ts'>
+import Home from './components/Home.vue'
 </script>
 
 <template>
-  <Cheeses />
+  <Home />
 </template>

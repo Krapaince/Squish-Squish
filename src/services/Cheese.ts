@@ -1,7 +1,8 @@
-import { Cheese, FetchedCheese } from '../models/Cheese'
+import { Cheese, FetchedCheese, NCheese } from '../models/Cheese'
 import { Country } from '../models/Country'
 import { fetchFromSparqlEndpoint } from './Sparql'
 import { match } from 'ts-pattern'
+import * as Url from './Url'
 
 export async function fetchCheesesInformation(): Promise<Array<FetchedCheese>> {
   const query = `
@@ -24,11 +25,11 @@ export async function fetchCheesesInformation(): Promise<Array<FetchedCheese>> {
         .otherwise((): undefined => undefined)
 
       return {
-        link: binding.cheese.value,
+        link: new URL(binding.cheese.value),
         label: binding.label.value,
         country: binding.country.value,
         source: binding.source.value,
-        thumbnail: thumbnail,
+        thumbnail: Url.tryFromString(thumbnail),
       }
     })
     .sort(function compareFn(elem1: FetchedCheese, elem2: FetchedCheese) {
@@ -36,17 +37,40 @@ export async function fetchCheesesInformation(): Promise<Array<FetchedCheese>> {
     })
 }
 
-export function toCheese(fetched_cheeses: Array<FetchedCheese>, countries: Array<Country>): Array<Cheese> {
+export function mapCountryToCheese(fetched_cheeses: Array<FetchedCheese>, countries: Array<Country>) {
   const cheeses: Array<Cheese> = []
 
-  for (const [i, cheese] of fetched_cheeses.entries()) {
-    cheeses.push({
-      link: cheese.link,
-      label: cheese.label,
-      country: countries[i],
-      source: cheese.source,
-      thumbnail: cheese.thumbnail,
+  for (const fetched_cheese of fetched_cheeses) {
+    const index = countries.findIndex((country) => {
+      const url = Url.tryFromString(fetched_cheese.country)
+
+      if (url == undefined) {
+        return fetched_cheese.country == country.name
+      } else {
+        return fetched_cheese.country == country.link?.toString()
+      }
     })
+
+    const cheese: Cheese = match<number, Cheese>(index)
+      .with(-1, (): Cheese => {
+        let country_url = Url.tryFromString(fetched_cheese.country)
+        let country = match(country_url != undefined)
+          .with(true, (): Country => {
+            return {
+              name: fetched_cheese.country.slice(fetched_cheese.country.lastIndexOf('/') + 1),
+              link: country_url,
+            }
+          })
+          .otherwise((): Country => {
+            return {
+              name: fetched_cheese.country,
+              link: undefined,
+            }
+          })
+        return NCheese.fromCountryAndFetchedCheese(country, fetched_cheese)
+      })
+      .otherwise((): Cheese => NCheese.fromCountryAndFetchedCheese(countries[index], fetched_cheese))
+    cheeses.push(cheese)
   }
   return cheeses
 }
