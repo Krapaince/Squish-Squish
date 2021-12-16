@@ -1,23 +1,26 @@
 <template>
-  <div class="z-0">
-    <div class="flex flex-row flex-wrap gap-1 justify-around content-center">
+  <SearchBar @filter-region='setCountryFilter' />
+  <div class='z-0'>
+    <div class='flex flex-row flex-wrap gap-1 justify-around content-center'>
       <Cheese
-        v-for="(cheese, index) in cheeses"
-        :key="index"
-        :link="cheese.link"
-        :label="cheese.label"
-        :country_name="cheese.country.name"
-        :country_link="cheese.country.link"
-        :country_thumbnail="cheese.country.thumbnail"
-        :source="cheese.source"
-        :thumbnail="cheese.thumbnail"
+        v-for='(cheese, index) in cheeses'
+        :key='index'
+        :class='{ hidden: !che_models.NCheeseFilter.isFilter(filter, cheese) }'
+        :link='cheese.link'
+        :label='cheese.label'
+        :country_name='cheese.country.name'
+        :country_link='cheese.country.link'
+        :country_thumbnail='cheese.country.thumbnail'
+        :source='cheese.source'
+        :thumbnail='cheese.thumbnail'
       />
     </div>
   </div>
 </template>
 
 <script setup lang='ts'>
-import { Ref, ref, onBeforeMount, provide } from 'vue'
+import SearchBar from './SearchBar.vue'
+import { Ref, ref, provide, onBeforeMount } from 'vue'
 import { fetchCheesesInformation, mapCountryToCheese, fetchWikidataCheeses } from '../services/Cheese'
 import { fetchCountriesWithUrl } from '../services/Country'
 import * as che_models from '../models/Cheese'
@@ -30,6 +33,8 @@ var cheeses: Ref<Array<che_models.Cheese>> = ref([])
 const countries: Ref<Array<cnt_models.Country>> = ref([])
 const filter: Ref<che_models.CheeseFilter> = ref({ country: 'All' })
 
+provide('countries', countries)
+
 onBeforeMount(async () => {
   let fetched_cheeses = await fetchCheesesInformation()
   let unique_countries = await fetchCountriesWithUrl(fetched_cheeses.map((value) => value.country))
@@ -41,10 +46,10 @@ onBeforeMount(async () => {
   cheeses.value = dbpedia_cheeses.value.concat(wikidata_cheeses.value)
 
   cheeses.value.sort((a, b) => a.label < b.label ? -1 : (a.label > b.label ? 1 : 0))
-  console.log(cheeses.value.length)
 })
 
 function setCountryFilter(country: String) {
   filter.value.country = country
 }
+
 </script>

@@ -18,7 +18,6 @@ export interface Cheese {
 }
 
 export namespace NCheese {
-
   export function fromCountryAndFetchedCheese(country: Country, cheese: FetchedCheese): Cheese {
     return {
       link: cheese.link,
@@ -32,4 +31,10 @@ export namespace NCheese {
 
 export interface CheeseFilter {
   country: String
+}
+
+export namespace NCheeseFilter {
+  export function isFilter(filter: CheeseFilter, cheese: Cheese): boolean {
+    return (filter.country == cheese.country.name || filter.country == 'All')
+  }
 }
