@@ -3,6 +3,7 @@ import { fetchFromSparqlEndpoint } from './Sparql'
 import * as Url from './Url'
 import { getSparqlEndpoint } from './Ontology'
 import { Ontology } from '../models/Ontology'
+import { mapCountryToCheese } from './Cheese'
 
 export async function fetchDBpedoaCountries(raw_countries: Array<string>): Promise<Array<Country>> {
   const countries_url: Array<URL> = []
@@ -62,4 +63,22 @@ async function fetchCountry(country_url: URL): Promise<Country> {
     link: country_url,
     thumbnail: Url.tryFromString(result.results.bindings[0].thumbnail.value),
   }
+}
+
+export function concatCountries(countries_a: Array<Country>, countries_b: Array<Country>): Array<Country> {
+  countries_b.forEach((country_b) => {
+    let to_push = true
+
+    for (const country_a of countries_a) {
+      if (country_a.name == country_b.name) {
+        to_push = false
+        break
+      }
+    }
+    if (to_push) {
+      countries_a.push(country_b)
+    }
+  })
+
+  return countries_a
 }

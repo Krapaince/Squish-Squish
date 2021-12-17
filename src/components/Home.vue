@@ -29,7 +29,7 @@
 import SearchBar from './SearchBar.vue'
 import { Ref, ref, provide, onBeforeMount, watch } from 'vue'
 import { fetchDBpediaCheeses, mapCountryToCheese, fetchWikidataCheeses } from '../services/Cheese'
-import { fetchDBpedoaCountries } from '../services/Country'
+import { fetchDBpedoaCountries, concatCountries } from '../services/Country'
 import * as che_models from '../models/Cheese'
 import * as cnt_models from '../models/Country'
 import Cheese from './Cheese.vue'
@@ -46,12 +46,15 @@ onBeforeMount(async () => {
   let unique_countries = await fetchDBpedoaCountries(dbpedia_fetched_cheeses.map((value) => value.country))
 
   cheeses.value = mapCountryToCheese(dbpedia_fetched_cheeses, unique_countries)
-  countries.value = unique_countries
 
   let wikidata_cheeses = await fetchWikidataCheeses()
+  let wikidata_countries = wikidata_cheeses.map((cheese) => cheese.country)
   cheeses.value = cheeses.value.concat(wikidata_cheeses)
+  countries.value = concatCountries(unique_countries, wikidata_countries).sort(
+    (a, b) => a.name.localeCompare(b.name)
+  )
 
-  cheeses.value.sort((a, b) => a.label.localeCompare(b.label) )
+  cheeses.value.sort((a, b) => a.label.localeCompare(b.label))
   nb_results.value = cheeses.value.length
 })
 
