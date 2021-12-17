@@ -4,18 +4,18 @@ import { Ontology } from './Ontology'
 
 export interface FetchedCheese {
   link: URL
-  label: string
-  country: string
-  source: string
+  label: String
+  country: String
+  source: String
   thumbnail?: URL
 }
 
 export interface Cheese {
   ontology: Ontology,
   link: URL
-  label: string
+  label: String
   country: Country
-  source: string
+  source: String
   thumbnail?: URL
 }
 
@@ -34,15 +34,18 @@ export namespace NCheese {
 
 export interface CheeseFilter {
   country: String
+  source: String
   query: String
 }
 
 export namespace NCheeseFilter {
   export function isFilter(filter: CheeseFilter, cheese: Cheese): boolean {
-    const region = filter.country == cheese.country.name || filter.country == 'All'
-    const query = filter.query.length == 0 || (filter.query.length && cheese.label.startsWith(filter.query))
+    const {country, source, query } = filter
+    const b_region: boolean = country == cheese.country.name || country == 'All'
+    const b_source: boolean = source.length == 0 || (cheese.source.toLowerCase().includes(source.toLowerCase()))
+    const b_query: boolean = query.length == 0 || (query.length && cheese.label.startsWith(query))
 
-    return region && query
+    return b_region && b_source && b_query
   }
 
   export function computeNbResults(filter:CheeseFilter, cheeses: Array<Cheese>): Number {

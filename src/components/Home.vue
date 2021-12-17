@@ -4,7 +4,8 @@
     <span class='text-center text-orange-700 block text-4xl'>Your cheesy cheese!</span>
   </div>
   <div class='mx-5'>
-    <SearchBar @filter-region='setCountryFilter' @filter-query='setQueryFilter' :nb_results='nb_results' />
+    <SearchBar @filter-region='setCountryFilter' @filter-query='setQueryFilter'
+               @filter-source='setQuerySourceFilter' :nb_results='nb_results' />
     <div class='z-0'>
       <div class='flex flex-row flex-wrap justify-between content-start'>
         <Cheese
@@ -36,7 +37,7 @@ import Cheese from './Cheese.vue'
 
 const cheeses: Ref<Array<che_models.Cheese>> = ref([])
 const countries: Ref<Array<cnt_models.Country>> = ref([])
-const filter: Ref<che_models.CheeseFilter> = ref({ country: 'All', query: '' })
+const filter: Ref<che_models.CheeseFilter> = ref({ country: 'All', query: '', source: '' })
 const nb_results: Ref<Number> = ref(0)
 
 provide('countries', countries)
@@ -51,7 +52,7 @@ onBeforeMount(async () => {
   let wikidata_countries = wikidata_cheeses.map((cheese) => cheese.country)
   cheeses.value = cheeses.value.concat(wikidata_cheeses)
   countries.value = concatCountries(unique_countries, wikidata_countries).sort(
-    (a, b) => a.name.localeCompare(b.name)
+    (a, b) => a.name.localeCompare(b.name),
   )
 
   cheeses.value.sort((a, b) => a.label.localeCompare(b.label))
@@ -64,6 +65,10 @@ function setCountryFilter(country: String) {
 
 function setQueryFilter(query: String) {
   filter.value.query = query
+}
+
+function setQuerySourceFilter(query: String) {
+  filter.value.source = query
 }
 
 watch(filter.value, () => {
