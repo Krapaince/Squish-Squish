@@ -15,7 +15,7 @@
         </div>
         <div>
           <div>
-            <input v-model='querySource' placeholder='Search' type='text' />
+            <input v-model='querySource' placeholder='e.g.: cow, goat' type='text' class='border-2 ' />
           </div>
         </div>
       </div>
@@ -25,7 +25,7 @@
         </div>
         <div>
           <div>
-            <input v-model='query' placeholder='Search' type='text' />
+            <input v-model='query' placeholder='e.g.: Camembert, Bondost' type='text' class='border-2 ' />
           </div>
         </div>
       </div>
