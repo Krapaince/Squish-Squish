@@ -11,6 +11,7 @@
           v-for='(cheese, index) in cheeses'
           :key='index'
           :class='{ hidden: !che_models.NCheeseFilter.isFilter(filter, cheese) }'
+          :ontology='cheese.ontology'
           :link='cheese.link'
           :label='cheese.label'
           :country_name='cheese.country.name'
