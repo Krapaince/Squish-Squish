@@ -4,20 +4,20 @@
     <span class='text-center text-orange-700 block text-4xl'>Your cheesy cheese!</span>
   </div>
   <div class='mx-5'>
-    <SearchBar @filter-region='setCountryFilter' @filter-query='setQueryFilter'
-               @filter-source='setQuerySourceFilter' :nb_results='nb_results' />
+    <SearchBar :nb_results='nb_results' @filter-region='setCountryFilter'
+               @filter-query='setQueryFilter' @filter-source='setQuerySourceFilter' />
     <div class='z-0'>
       <div class='flex flex-row flex-wrap justify-between content-start'>
         <Cheese
           v-for='(cheese, index) in cheeses'
           :key='index'
           :class='{ hidden: !che_models.NCheeseFilter.isFilter(filter, cheese) }'
-          :ontology='cheese.ontology'
-          :link='cheese.link'
-          :label='cheese.label'
-          :country_name='cheese.country.name'
           :country_link='cheese.country.link'
+          :country_name='cheese.country.name'
           :country_thumbnail='cheese.country.thumbnail'
+          :label='cheese.label'
+          :link='cheese.link'
+          :ontology='cheese.ontology'
           :source='cheese.source'
           :thumbnail='cheese.thumbnail'
         />
@@ -26,11 +26,11 @@
   </div>
 </template>
 
-<script setup lang='ts'>
+<script lang='ts' setup>
 import SearchBar from './SearchBar.vue'
-import { Ref, ref, provide, onBeforeMount, watch } from 'vue'
-import { fetchDBpediaCheeses, mapCountryToCheese, fetchWikidataCheeses } from '../services/Cheese'
-import { fetchDBpedoaCountries, concatCountries } from '../services/Country'
+import { onBeforeMount, provide, Ref, ref, watch } from 'vue'
+import { fetchDBpediaCheeses, fetchWikidataCheeses, mapCountryToCheese } from '../services/Cheese'
+import { concatCountries, fetchDBpedoaCountries } from '../services/Country'
 import * as che_models from '../models/Cheese'
 import * as cnt_models from '../models/Country'
 import Cheese from './Cheese.vue'

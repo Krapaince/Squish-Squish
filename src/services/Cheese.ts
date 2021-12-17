@@ -108,9 +108,9 @@ export async function fetchWikidataCheeses(): Promise<Array<Cheese>> {
         },
         source: cheese.sourceLabel.value,
         thumbnail: cheese.cheeseImage ? Url.tryFromString(cheese.cheeseImage.value) : undefined,
-      };
+      }
       cheeses.push(new_cheese)
     }
-  });
+  })
   return (cheeses)
 }

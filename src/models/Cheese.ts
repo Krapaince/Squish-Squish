@@ -40,7 +40,7 @@ export interface CheeseFilter {
 
 export namespace NCheeseFilter {
   export function isFilter(filter: CheeseFilter, cheese: Cheese): boolean {
-    const {country, source, query } = filter
+    const { country, source, query } = filter
     const b_region: boolean = country == cheese.country.name || country == 'All'
     const b_source: boolean = source.length == 0 || (cheese.source.toLowerCase().includes(source.toLowerCase()))
     const b_query: boolean = query.length == 0 || (query.length && cheese.label.startsWith(query))
@@ -48,7 +48,7 @@ export namespace NCheeseFilter {
     return b_region && b_source && b_query
   }
 
-  export function computeNbResults(filter:CheeseFilter, cheeses: Array<Cheese>): Number {
+  export function computeNbResults(filter: CheeseFilter, cheeses: Array<Cheese>): Number {
     let nb_results = 0
 
     for (const cheese of cheeses) {

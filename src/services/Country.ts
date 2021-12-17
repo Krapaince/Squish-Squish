@@ -3,7 +3,6 @@ import { fetchFromSparqlEndpoint } from './Sparql'
 import * as Url from './Url'
 import { getSparqlEndpoint } from './Ontology'
 import { Ontology } from '../models/Ontology'
-import { mapCountryToCheese } from './Cheese'
 
 export async function fetchDBpedoaCountries(raw_countries: Array<string>): Promise<Array<Country>> {
   const countries_url: Array<URL> = []

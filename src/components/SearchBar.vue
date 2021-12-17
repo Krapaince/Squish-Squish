@@ -15,7 +15,7 @@
         </div>
         <div>
           <div>
-            <input v-model='querySource' type='text' placeholder='Search' />
+            <input v-model='querySource' placeholder='Search' type='text' />
           </div>
         </div>
       </div>
@@ -25,7 +25,7 @@
         </div>
         <div>
           <div>
-            <input v-model='query' type='text' placeholder='Search' />
+            <input v-model='query' placeholder='Search' type='text' />
           </div>
         </div>
       </div>
@@ -37,9 +37,9 @@
   </div>
 </template>
 
-<script setup lang='ts'>
+<script lang='ts' setup>
 import Region from './SearchBar/Region.vue'
-import { ref, Ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 const query = ref('')
 const querySource = ref('')
@@ -53,6 +53,7 @@ const emit = defineEmits(['filterRegion', 'filterSource', 'filterQuery'])
 function setCountryFilters(country: String) {
   emit('filterRegion', country)
 }
+
 watch(querySource, () => {
   emit('filterSource', querySource.value)
 })
