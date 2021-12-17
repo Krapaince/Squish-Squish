@@ -1,8 +1,10 @@
 import { Country } from '../models/Country'
 import { fetchFromSparqlEndpoint } from './Sparql'
 import * as Url from './Url'
+import { getSparqlEndpoint } from './Ontology'
+import { Ontology } from '../models/Ontology'
 
-export async function fetchCountriesWithUrl(raw_countries: Array<string>): Promise<Array<Country>> {
+export async function fetchDBpedoaCountries(raw_countries: Array<string>): Promise<Array<Country>> {
   const countries_url: Array<URL> = []
 
   await raw_countries.forEach((value) => {
@@ -46,7 +48,7 @@ async function fetchCountry(country_url: URL): Promise<Country> {
         OPTIONAL {<${raw_country_url}>  dbo:thumbnail ?thumbnail }.
         FILTER (lang(?name) = "en")
       }`
-  const result: JSON = await fetchFromSparqlEndpoint(query)
+  const result: JSON = await fetchFromSparqlEndpoint(query, getSparqlEndpoint(Ontology.DBpedia))
 
   if (result.results.bindings.length == 0) {
     return {

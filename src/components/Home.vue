@@ -27,32 +27,30 @@
 <script setup lang='ts'>
 import SearchBar from './SearchBar.vue'
 import { Ref, ref, provide, onBeforeMount, watch } from 'vue'
-import { fetchCheesesInformation, mapCountryToCheese, fetchWikidataCheeses } from '../services/Cheese'
-import { fetchCountriesWithUrl } from '../services/Country'
+import { fetchDBpediaCheeses, mapCountryToCheese, fetchWikidataCheeses } from '../services/Cheese'
+import { fetchDBpedoaCountries } from '../services/Country'
 import * as che_models from '../models/Cheese'
 import * as cnt_models from '../models/Country'
 import Cheese from './Cheese.vue'
 
-const dbpedia_cheeses: Ref<Array<che_models.Cheese>> = ref([])
-const wikidata_cheeses: Ref<Array<che_models.Cheese>> = ref([])
-var cheeses: Ref<Array<che_models.Cheese>> = ref([])
+const cheeses: Ref<Array<che_models.Cheese>> = ref([])
 const countries: Ref<Array<cnt_models.Country>> = ref([])
-const filter: Ref<che_models.CheeseFilter> = ref({ country: 'All', query: ''})
+const filter: Ref<che_models.CheeseFilter> = ref({ country: 'All', query: '' })
 const nb_results: Ref<Number> = ref(0)
 
 provide('countries', countries)
 
 onBeforeMount(async () => {
-  let fetched_cheeses = await fetchCheesesInformation()
-  let unique_countries = await fetchCountriesWithUrl(fetched_cheeses.map((value) => value.country))
+  let dbpedia_fetched_cheeses = await fetchDBpediaCheeses()
+  let unique_countries = await fetchDBpedoaCountries(dbpedia_fetched_cheeses.map((value) => value.country))
 
+  cheeses.value = mapCountryToCheese(dbpedia_fetched_cheeses, unique_countries)
   countries.value = unique_countries
-  dbpedia_cheeses.value = mapCountryToCheese(fetched_cheeses, unique_countries)
 
-  wikidata_cheeses.value = await fetchWikidataCheeses()
-  cheeses.value = dbpedia_cheeses.value.concat(wikidata_cheeses.value)
+  let wikidata_cheeses = await fetchWikidataCheeses()
+  cheeses.value = cheeses.value.concat(wikidata_cheeses)
 
-  cheeses.value.sort((a, b) => a.label < b.label ? -1 : (a.label > b.label ? 1 : 0))
+  cheeses.value.sort((a, b) => a.label.localeCompare(b.label) )
   nb_results.value = cheeses.value.length
 })
 

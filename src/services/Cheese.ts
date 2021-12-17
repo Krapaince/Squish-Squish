@@ -3,8 +3,10 @@ import { Country } from '../models/Country'
 import { fetchFromSparqlEndpoint } from './Sparql'
 import { match } from 'ts-pattern'
 import * as Url from './Url'
+import { getSparqlEndpoint } from './Ontology'
+import { Ontology } from '../models/Ontology'
 
-export async function fetchCheesesInformation(): Promise<Array<FetchedCheese>> {
+export async function fetchDBpediaCheeses(): Promise<Array<FetchedCheese>> {
   const query = `
   SELECT DISTINCT ?cheese ?label ?country ?source ?thumbnail
     WHERE {
@@ -16,7 +18,7 @@ export async function fetchCheesesInformation(): Promise<Array<FetchedCheese>> {
       OPTIONAL { ?cheese dbo:thumbnail ?thumbnail }.
       FILTER (lang(?label) = "en")
     }`
-  const results: any = await fetchFromSparqlEndpoint(query)
+  const results: any = await fetchFromSparqlEndpoint(query, getSparqlEndpoint(Ontology.DBpedia))
 
   return results.results.bindings
     .map((binding: any) => {
@@ -91,19 +93,20 @@ export async function fetchWikidataCheeses(): Promise<Array<Cheese>> {
       }
     }
   }`
-  const results: any = await fetchFromSparqlEndpoint(query, 'https://query.wikidata.org/sparql')
+  const results: any = await fetchFromSparqlEndpoint(query, getSparqlEndpoint(Ontology.Wikidata))
   let cheeses: Array<Cheese> = []
   results.results.bindings.forEach(cheese => {
     if (isNaN(cheese.cheeseLabel.value.substr(1)) && isNaN(cheese.sourceLabel.value.substr(1))) {
       const new_cheese: Cheese = {
-        link: Url.tryFromString(cheese.cheese.value),
+        ontology: Ontology.Wikidata,
+        link: new URL(cheese.cheese.value),
         label: cheese.cheeseLabel.value,
         country: {
-          name: cheese.countryLabel ? cheese.countryLabel.value : undefined,
+          name: cheese.countryLabel.value,
           link: cheese.country ? Url.tryFromString(cheese.country.value) : undefined,
           thumbnail: cheese.countryImage ? Url.tryFromString(cheese.countryImage.value) : undefined,
         },
-        source: cheese.sourceLabel ? cheese.sourceLabel.value : undefined,
+        source: cheese.sourceLabel.value,
         thumbnail: cheese.cheeseImage ? Url.tryFromString(cheese.cheeseImage.value) : undefined,
       };
       cheeses.push(new_cheese)

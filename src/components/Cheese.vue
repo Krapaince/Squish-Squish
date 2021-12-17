@@ -10,7 +10,7 @@
         <a class="text-gray-900 text-lg" :href="`${link.toString()}`">{{ label }}</a>
         <span class="text-gray-500 text-sm">{{ source }}</span>
         <div class="flex flex-row place-items-center gap-1">
-          <div v-if="country_thumbnail != undefined"> <img class="w-4 h-4" :src="`${country_thumbnail.toString()}`" />
+          <div v-if="country_thumbnail != undefined"> <img class="w-5 h-3" :src="`${country_thumbnail.toString()}`" />
           </div>
           <div>
             <a v-if="isCountryLinkDefined()" class="text-gray-500 text-sm" :href="`${country_link.toString()}`">{{ country_name }}</a>

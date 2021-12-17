@@ -1,5 +1,6 @@
 import { Country } from './Country'
 import * as Url from '../services/Url'
+import { Ontology } from './Ontology'
 
 export interface FetchedCheese {
   link: URL
@@ -10,6 +11,7 @@ export interface FetchedCheese {
 }
 
 export interface Cheese {
+  ontology: Ontology,
   link: URL
   label: string
   country: Country
@@ -20,6 +22,7 @@ export interface Cheese {
 export namespace NCheese {
   export function fromCountryAndFetchedCheese(country: Country, cheese: FetchedCheese): Cheese {
     return {
+      ontology: Ontology.DBpedia,
       link: cheese.link,
       label: cheese.label,
       country: country,

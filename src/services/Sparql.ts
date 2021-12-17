@@ -1,6 +1,6 @@
 export async function fetchFromSparqlEndpoint(
   query: string,
-  endpoint: string = 'https://dbpedia.org/sparql'
+  endpoint: string
 ): Promise<JSON> {
   return await fetch(encodeURI(endpoint + '?query=' + query), {
     method: 'GET',
